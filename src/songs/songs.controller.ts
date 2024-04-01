@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { SongsService } from './songs.service';
 import { CreateSongDto, EditSongDto } from './dto';
 import { Song } from './entities';
+import { QueryOptionsDto } from './dto/query-options.dto';
 
 @Controller('songs')
 export class SongsController {
@@ -9,8 +10,9 @@ export class SongsController {
     constructor(private songsService:SongsService){}
 
     @Get()
-    findAll() {
-        return this.songsService.findAll();
+    findAll(
+    @Query() queryOptionsDto : QueryOptionsDto){
+        return this.songsService.findAll(queryOptionsDto);
     }
 
     @Get(':id')
@@ -36,7 +38,7 @@ export class SongsController {
     delete(@Param('id', new ParseIntPipe({
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
     })) id: number) {
-        return 'Find All Songs'
+        return this.songsService.delete(id);
     }
 
 }

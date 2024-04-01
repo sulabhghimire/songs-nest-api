@@ -1,5 +1,5 @@
 ### SEND FETCH SONGS REQUEST
-GET  http://localhost:3000/songs
+GET  http://localhost:3000/songs?limit=10&page=1&search=Lover
 
 ### FIND SONG BY ID
 GET  http://localhost:3000/songs/10
@@ -9,8 +9,8 @@ POST   http://localhost:3000/songs
 Content-Type: application/json
 
 {
-    "title": "Lasting Lover",
-    "artists": ["Sigla"],
+    "title": "Lasting Lover 2",
+    "artists": ["Sigla 2"],
     "releasedDate": "2022-09-02",
     "duration": "02:34"
 }
@@ -20,10 +20,10 @@ PATCH   http://localhost:3000/songs/1
 Content-Type: application/json
 
 {
-    "title": "Lasting",
-    "artists": ["Sigla"],
-    "releasedDate": "2022-09-02",
-    "duration": "02:34"
+    "title": "Lasting Edited Again",
+    "artists": ["Sigla Edited"],
+    "releasedDate": "2022-09-03",
+    "duration": "02:33"
 }
 
 ### DELETE A SONG

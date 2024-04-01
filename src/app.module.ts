@@ -4,6 +4,11 @@ import { LoggerMiddleware } from './common/middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Song } from './songs/entities';
+import { UsersModule } from './users/users.module';
+import { ArtistsModule } from './artists/artists.module';
+import { User } from './users/entities';
+import { Artist } from './artists/entities';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,9 +20,12 @@ import { Song } from './songs/entities';
       port: 5432,
       username: 'postgres',
       password: '123',
-      entities: [Song],
+      entities: [Song, User, Artist],
       synchronize: true,
     }),
+    UsersModule,
+    ArtistsModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
