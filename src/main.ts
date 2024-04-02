@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
+// import { AtGuard } from './common/guards';
 
 async function bootstrap() {
 
@@ -17,6 +18,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true
   }))
+
+  // const reflector = new Reflector()
+  // app.useGlobalGuards(new AtGuard(reflector)); // Enable guard at global level
 
   const PORT = 3000;
   await app.listen(PORT);

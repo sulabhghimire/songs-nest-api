@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities';
@@ -38,12 +38,20 @@ export class AuthService {
         await this.userRepository.update({id:userId}, {hash : hash})
     }
 
-    logOut(){
+    async logOut(userId: number){
+        await this.userRepository.update({id: userId}, {hash: null})
+    } 
 
-    }
+    async refreshTokens(userId: number, rt: string):Promise<Tokens>{
+        const user = await this.userRepository.findOneBy({id: userId});
+        if(!user || !user.hash) throw new ForbiddenException('Access Denied');
 
-    refreshTokens(){
-    
+        const rtMatches = await argon.verify(user.hash, rt);
+
+        if(!rtMatches) throw new ForbiddenException('Access Denied');
+        const tokens = await this.getTokens(user.id, user.email, user.role);
+        await this.updateRtHash(user.id, tokens.refresh_token);
+        return tokens;
     }
 
 
