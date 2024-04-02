@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } fro
 import { AuthService } from './auth.service';
 import { LogInDto } from './dto';
 import { AtGuard, RtGuard } from 'src/common/guards';
-import { GetUser, Public } from 'src/common/decoratoes';
+import { GetUser, Public } from 'src/common/decoraters';
 
 @Controller({
     path :'auth',

@@ -3,6 +3,8 @@ import { SongsService } from './songs.service';
 import { CreateSongDto, EditSongDto } from './dto';
 import { Song } from './entities';
 import { QueryOptionsDto } from './dto/query-options.dto';
+import { GetUser, Roles } from 'src/common/decoraters';
+import { UserType } from 'src/users/constants';
 
 @Controller('songs')
 export class SongsController {
@@ -22,20 +24,29 @@ export class SongsController {
         return this.songsService.findOne(id);
     }
 
+    @Roles(UserType.ARTIST)
     @Post('')
-    create(@Body() body: CreateSongDto):Promise<Song> {
+    create(
+        @GetUser('sub') userId: number,
+        @Body() body: CreateSongDto):Promise<Song> {
         return this.songsService.create(body);
     }
 
+    @Roles(UserType.ARTIST)
     @Patch(':id')
-    update(@Param('id', new ParseIntPipe({
+    update(
+        @GetUser('sub') userId: number,
+        @Param('id', new ParseIntPipe({
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
     })) id: number, @Body() dto:EditSongDto) {
         return this.songsService.edit(id, dto);
     }
 
+    @Roles(UserType.ADMIN, UserType.ARTIST)
     @Delete(':id')
-    delete(@Param('id', new ParseIntPipe({
+    delete(
+        @GetUser('sub') userId: number,
+        @Param('id', new ParseIntPipe({
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
     })) id: number) {
         return this.songsService.delete(id);

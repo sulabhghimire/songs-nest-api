@@ -10,7 +10,7 @@ import { User } from './users/entities';
 import { Artist } from './artists/entities';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
-import { AtGuard } from './common/guards';
+import { AtGuard, RolesGuard } from './common/guards';
 
 @Module({
   imports: [
@@ -34,6 +34,10 @@ import { AtGuard } from './common/guards';
     {
       provide: APP_GUARD,
       useClass: AtGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     }
   ],
 })

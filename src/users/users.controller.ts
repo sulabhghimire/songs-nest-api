@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { createUserDto } from './dto';
+import { GetUser, Public, Roles } from 'src/common/decoraters';
+import { UserType } from './constants';
 
 @Controller({
     path:'users',
@@ -11,10 +13,13 @@ export class UsersController {
     constructor(private userService: UsersService){}
 
     @Get('me')
-    getMe() {
+    getMe(
+        @GetUser('sub') userId: number
+    ) {
         return 'Get Me';
     }
 
+    @Public()
     @Post('signup')
     create(
         @Body() createUserDto: createUserDto
@@ -29,11 +34,11 @@ export class UsersController {
         return `Information for user with id ${id}`
     }
 
-    @Patch(':id')
+    @Patch('')
     updateUser(
-        @Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id:number
+        @GetUser('sub') userId: number
     ){
-        return `Update user with id ${id}`
+        return `Update user with id ${userId}`
 
     }
 
