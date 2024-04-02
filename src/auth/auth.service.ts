@@ -7,13 +7,15 @@ import { LogInDto } from './dto';
 import { Tokens } from './types';
 import { UserType } from 'src/users/constants';
 import * as argon from 'argon2'
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
 
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
-        private jwt: JwtService
+        private jwt: JwtService,
+        private config:ConfigService,
     ){}
 
 
@@ -58,8 +60,8 @@ export class AuthService {
     async getTokens(userId: number,  email: string, role: UserType):Promise<Tokens>{
 
         const [at, rt] = await Promise.all([
-            this.jwt.signAsync({sub: userId, email: email, role: role}, {expiresIn: 60 * 15, secret: 'at-secret'}),
-            this.jwt.signAsync({sub: userId}, {secret:'rt-secret', expiresIn: 60 * 60 * 24 *7})
+            this.jwt.signAsync({sub: userId, email: email, role: role}, {expiresIn: 60 * 15, secret: this.config.get<string>('ACCESS_TOKEN_SECRET')}),
+            this.jwt.signAsync({sub: userId}, {secret:this.config.get<string>('REFRESH_TOKEN_SECRET'), expiresIn: 60 * 60 * 24 *7})
         ])
 
         return {

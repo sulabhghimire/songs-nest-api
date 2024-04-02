@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 // import { AtGuard } from './common/guards';
 
 async function bootstrap() {
@@ -22,7 +23,8 @@ async function bootstrap() {
   // const reflector = new Reflector()
   // app.useGlobalGuards(new AtGuard(reflector)); // Enable guard at global level
 
-  const PORT = 3000;
+  const configService = app.get(ConfigService);
+  const PORT = configService.get<number>('PORT') || 3000;
   await app.listen(PORT);
 
   logger.log(`The backend service is running at PORT:${PORT}.`);

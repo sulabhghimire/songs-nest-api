@@ -5,16 +5,18 @@ import { AtPayload } from "../types";
 import { User } from "src/users/entities";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AtJwtStrategy extends PassportStrategy(Strategy, 'jwt'){
     constructor(
-        @InjectRepository(User) private userRepository: Repository<User>
+        @InjectRepository(User) private userRepository: Repository<User>,
+        config: ConfigService
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey:'at-secret',
+            secretOrKey: config.get<string>('REFRESH_TOKEN_SECRET'),
         });
     }
 

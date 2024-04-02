@@ -11,19 +11,28 @@ import { Artist } from './artists/entities';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard, RolesGuard } from './common/guards';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { validate } from './appconfig/validation';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      validate: validate,
+      isGlobal: true
+    }),
     SongsModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      database: 'nest-songs',
-      port: 5432,
-      username: 'postgres',
-      password: '123',
-      entities: [Song, User, Artist],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: "postgres",
+        host: configService.get<string>("DATABASE_SERVER"),
+        port: configService.get<number>("DATABASE_PORT"),
+        username: configService.get<string>("DATABASE_USERNAME"),
+        password: configService.get<string>("DATABASE_USER_PASS"),
+        database: configService.get<string>("DATABASE_NAME"),
+        entities: [User, Artist, Song]
+      }),
     }),
     UsersModule,
     ArtistsModule,
